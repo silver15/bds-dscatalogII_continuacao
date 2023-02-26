@@ -1,5 +1,9 @@
+.product-crud-container{
+    max-width: 960px;
+}
 
-.bvtn-crud-add{
+
+.btn-crud-add{
     width: 100%;
     height: 50px;
     border-radius: 10px;

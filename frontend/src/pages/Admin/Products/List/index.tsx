@@ -29,10 +29,10 @@ const List = () => {
     }
 
     return (
-        <>
+        <div className="product-crud-container">
        <div className="product-crud-bar-container">
         <Link to= "/admin/products/create">
-        <button className="btn btn-primary text-white bvtn-crud-add">ADICIONAR</button>
+        <button className="btn btn-primary text-white btn-crud-add">ADICIONAR</button>
         </Link>
         
         <div className="base-card product-filter-container">Search bar</div>
@@ -51,10 +51,7 @@ const List = () => {
             <ProductCrudCard product={product} />
             </div>
         </div>
-       
-       
-       
-       </>
+       </div>
     )
 }
 
