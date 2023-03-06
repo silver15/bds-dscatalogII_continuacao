@@ -13,16 +13,16 @@ const List = () => {
   const [page, setPage] = useState<SpringPage<Product>>();
 
   useEffect(() => {
-    getproducts();
+    getproducts(0);
   }, []);
 
-  const getproducts = () =>{
+  const getproducts = (pagerNumber : number) =>{
     const config: AxiosRequestConfig = {
       method: 'GET',
       url: '/products',
       params: {
-        page: 0,
-        size: 50,
+        page: pagerNumber,
+        size: 3,
       },
     };
 
@@ -46,11 +46,15 @@ const List = () => {
         {page?.content.map((product) => (
           <div key={product.id} className="col-sm-6 col-md-12">
             <ProductCrudCard product={product}
-            onDelete={() => getproducts()} />
+            onDelete={() => getproducts(page.number)} />
           </div>
         ))}
       </div>
-      <Pagination />
+      <Pagination 
+      pageCount={(page) ? page.totalPages : 0 }
+      range={3}
+      onChange={getproducts}
+      />
     </div>
   );
 };
