@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 import Pagination from 'components/Pagination';
 import ProductCrudCard from 'pages/Admin/Products/ProductCrudCard';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from 'types/product';
 import { SpringPage } from 'types/Vendor/spring';
@@ -9,19 +9,29 @@ import { requestBackend } from 'util/requests';
 
 import './styles.css';
 
+type ControlComponentsData = {
+  activePage: number;
+}
+
 const List = () => {
   const [page, setPage] = useState<SpringPage<Product>>();
 
-  useEffect(() => {
-    getproducts(0);
-  }, []);
+  const [controlComponentsData, setControlComponentsData] = useState<ControlComponentsData>(
+    {
+      activePage: 0
+    }
+  );
 
-  const getproducts = (pagerNumber : number) =>{
+  const handlePageChange = (pageNumber: number) => {
+    setControlComponentsData({activePage: pageNumber});
+  };
+
+  const getProducts = useCallback(() => {
     const config: AxiosRequestConfig = {
       method: 'GET',
       url: '/products',
       params: {
-        page: pagerNumber,
+        page: controlComponentsData.activePage,
         size: 3,
       },
     };
@@ -29,7 +39,17 @@ const List = () => {
     requestBackend(config).then((response) => {
       setPage(response.data);
     });
-  }
+  }, [controlComponentsData]);
+
+  
+
+  useEffect(() => {
+    getProducts();
+
+  }, [getProducts]);
+   
+
+  
 
   return (
     <div className="product-crud-container">
@@ -46,14 +66,14 @@ const List = () => {
         {page?.content.map((product) => (
           <div key={product.id} className="col-sm-6 col-md-12">
             <ProductCrudCard product={product}
-            onDelete={() => getproducts(page.number)} />
+            onDelete={getProducts} />
           </div>
         ))}
       </div>
       <Pagination 
       pageCount={(page) ? page.totalPages : 0 }
       range={3}
-      onChange={getproducts}
+      onChange={handlePageChange}
       />
     </div>
   );
